@@ -59,7 +59,7 @@
                 <button class="profile-btn">
                     <img src="https://imgs.search.brave.com/uNvn7Zj4FmMzdS6zoyPajaUssAqb57XABtHKMa7nN3E/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9zdGF0/aWMudmVjdGVlenku/Y29tL3N5c3RlbS9y/ZXNvdXJjZXMvdGh1/bWJuYWlscy8wMjAv/MTY4LzcxOS9zbWFs/bC9wcmV0dHktYm95/LXdpdGgtc3R5bGlz/aC1oYWlyc3R5bGUt/ZmxhdC1hdmF0YXIt/aWNvbi13aXRoLWdy/ZWVuLWRvdC1lZGl0/YWJsZS1kZWZhdWx0/LXBlcnNvbmEtZm9y/LXV4LXVpLWRlc2ln/bi1wcm9maWxlLWNo/YXJhY3Rlci1waWN0/dXJlLXdpdGgtb25s/aW5lLXN0YXR1cy1j/b2xvci1tZXNzYWdp/bmctYXBwLXVzZXIt/YmFkZ2UtdmVjdG9y/LmpwZw"
                         alt="User" class="avatar">
-                    <span>Somya Tanwar</span>
+                    <span id="user-name-display">Guest</span>
                 </button>
             </header>
 
@@ -119,17 +119,7 @@
                     <div class="chat-layout">
                         <!-- Chat History -->
                         <div class="chat-history" id="chat-messages">
-                            <!-- Welcome Message -->
-                            <div class="message bot">
-                                <div class="avatar-bot"><img
-                                        src="https://imgs.search.brave.com/6ea6TNFL2zWfU6pVglVUCezpzxLvuP_b5hyPRvVaRBw/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9jZG4u/dmVjdG9yc3RvY2su/Y29tL2kvcHJldmll/dy0xeC80NS84Mi9z/dGV0aG9zY29wZS13/aGl0ZS12ZWN0b3It/MzIxMDQ1ODIuanBn"
-                                        alt="Logo"
-                                        style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;"></div>
-                                <div class="msg-content">
-                                    <p>Hello Somya! How are you doing today? I noticed you have some upcoming medication
-                                        due in an hour.</p>
-                                </div>
-                            </div>
+                            <!-- Welcome Message will be dynamic now, managed by JS -->
                         </div>
 
                         <!-- Chat Input Area (Chat View) -->
@@ -162,11 +152,6 @@
                                 <p>Manage your upcoming doctor appointments and wellness sessions.</p>
                             </div>
                             <div class="cal-controls">
-                                <div class="month-nav">
-                                    <button><i class="ph ph-caret-left"></i></button>
-                                    <span>October 2024</span>
-                                    <button><i class="ph ph-caret-right"></i></button>
-                                </div>
                                 <button class="today-btn">Today</button>
                             </div>
                         </div>
