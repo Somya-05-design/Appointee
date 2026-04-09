@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aura - Your Wellness Assistant</title>
+    <meta name="description"
+        content="Aura is your intelligent, empathetic healthcare chatbot for appointment booking, medicine reminders, and wellness insights.">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Phosphor Icons -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="logo">
+                <img src="https://imgs.search.brave.com/6ea6TNFL2zWfU6pVglVUCezpzxLvuP_b5hyPRvVaRBw/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9jZG4u/dmVjdG9yc3RvY2su/Y29tL2kvcHJldmll/dy0xeC80NS84Mi9z/dGV0aG9zY29wZS13/aGl0ZS12ZWN0b3It/MzIxMDQ1ODIuanBn"
+                    alt="Logo" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">
+            </div>
+            <nav class="nav-links">
+                <button class="nav-item active" data-view="home" title="Home">
+                    <i class="ph ph-house"></i>
+                </button>
+                <button class="nav-item" data-view="chat" title="Chat">
+                    <i class="ph ph-chat-circle-dots"></i>
+                </button>
+                <button class="nav-item" data-view="calendar" title="Appointments">
+                    <i class="ph ph-calendar-blank"></i>
+                </button>
+                <button class="nav-item" data-view="medication" title="Medications">
+                    <i class="ph ph-pill"></i>
+                </button>
+                <button class="nav-item" data-view="education" title="Health Hub">
+                    <i class="ph ph-book-open-text"></i>
+                </button>
+            </nav>
+            <div class="bottom-nav">
+                <button class="nav-item" title="Settings">
+                    <i class="ph ph-gear"></i>
+                </button>
+                <button class="nav-item" title="Logout">
+                    <i class="ph ph-sign-out"></i>
+                </button>
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="main-content">
+            <!-- Header -->
+            <header class="top-header">
+                <div class="header-spacer"></div>
+                <button class="profile-btn">
+                    <img src="https://imgs.search.brave.com/uNvn7Zj4FmMzdS6zoyPajaUssAqb57XABtHKMa7nN3E/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9zdGF0/aWMudmVjdGVlenku/Y29tL3N5c3RlbS9y/ZXNvdXJjZXMvdGh1/bWJuYWlscy8wMjAv/MTY4LzcxOS9zbWFs/bC9wcmV0dHktYm95/LXdpdGgtc3R5bGlz/aC1oYWlyc3R5bGUt/ZmxhdC1hdmF0YXIt/aWNvbi13aXRoLWdy/ZWVuLWRvdC1lZGl0/YWJsZS1kZWZhdWx0/LXBlcnNvbmEtZm9y/LXV4LXVpLWRlc2ln/bi1wcm9maWxlLWNo/YXJhY3Rlci1waWN0/dXJlLXdpdGgtb25s/aW5lLXN0YXR1cy1j/b2xvci1tZXNzYWdp/bmctYXBwLXVzZXIt/YmFkZ2UtdmVjdG9y/LmpwZw"
+                        alt="User" class="avatar">
+                    <span>Somya Tanwar</span>
+                </button>
+            </header>
+
+            <!-- Views Container -->
+            <div class="views-container">
+
+                <!-- Home View -->
+                <section id="view-home" class="view active">
+                    <div class="hero">
+                        <h1 class="hero-title">Your <strong>Intelligent Care</strong> And<br>Wellness Companion</h1>
+
+                        <!-- Animated Orb Element -->
+                        <div class="orb-container">
+                            <div class="orb"></div>
+                            <div class="orb-reflection"></div>
+                        </div>
+
+                        <!-- Chat Input Area (Home) -->
+                        <div class="input-section">
+                            <div class="suggestions">
+                                <button class="suggestion-chip">
+                                    <i class="ph ph-calendar-plus"></i> Book Appointment
+                                </button>
+                                <button class="suggestion-chip">
+                                    <i class="ph ph-pill"></i> Medicine Reminder
+                                </button>
+                                <button class="suggestion-chip">
+                                    <i class="ph ph-heartbeat"></i> Check Symptoms
+                                </button>
+                                <button class="suggestion-chip">
+                                    <i class="ph ph-dots-three"></i>
+                                </button>
+                            </div>
+
+                            <div class="chat-input-wrapper">
+                                <input type="text" placeholder="How can I help you feel better today?..."
+                                    class="chat-input" id="home-input">
+                                <div class="input-actions">
+                                    <div class="left-actions">
+                                        <button class="action-btn"><i class="ph ph-paperclip"></i> Records</button>
+                                        <button class="action-btn"><i class="ph ph-lightbulb"></i> Resources</button>
+                                    </div>
+                                    <div class="right-actions">
+                                        <button class="action-btn has-text"><i class="ph ph-microphone"></i>
+                                            Voice</button>
+                                        <button class="send-btn" onclick="startChat()"><i
+                                                class="ph ph-paper-plane-right"></i> Send</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Chat View -->
+                <section id="view-chat" class="view">
+                    <div class="chat-layout">
+                        <!-- Chat History -->
+                        <div class="chat-history" id="chat-messages">
+                            <!-- Welcome Message -->
+                            <div class="message bot">
+                                <div class="avatar-bot"><img
+                                        src="https://imgs.search.brave.com/6ea6TNFL2zWfU6pVglVUCezpzxLvuP_b5hyPRvVaRBw/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9jZG4u/dmVjdG9yc3RvY2su/Y29tL2kvcHJldmll/dy0xeC80NS84Mi9z/dGV0aG9zY29wZS13/aGl0ZS12ZWN0b3It/MzIxMDQ1ODIuanBn"
+                                        alt="Logo"
+                                        style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;"></div>
+                                <div class="msg-content">
+                                    <p>Hello Somya! How are you doing today? I noticed you have some upcoming medication
+                                        due in an hour.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Chat Input Area (Chat View) -->
+                        <div class="input-section chat-mode">
+                            <div class="chat-input-wrapper">
+                                <input type="text" placeholder="Type your message..." class="chat-input"
+                                    id="main-chat-input">
+                                <div class="input-actions">
+                                    <div class="left-actions">
+                                        <button class="action-btn"><i class="ph ph-paperclip"></i></button>
+                                    </div>
+                                    <div class="right-actions">
+                                        <button class="action-btn"><i class="ph ph-microphone"></i></button>
+                                        <button class="send-btn" id="main-send-btn"><i
+                                                class="ph ph-paper-plane-right"></i></button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Calendar View -->
+                <section id="view-calendar" class="view">
+                    <div class="calendar-layout">
+                        <!-- Header -->
+                        <div class="calendar-header">
+                            <div class="cal-title-area">
+                                <h2>Calendar</h2>
+                                <p>Manage your upcoming doctor appointments and wellness sessions.</p>
+                            </div>
+                            <div class="cal-controls">
+                                <div class="month-nav">
+                                    <button><i class="ph ph-caret-left"></i></button>
+                                    <span>October 2024</span>
+                                    <button><i class="ph ph-caret-right"></i></button>
+                                </div>
+                                <button class="today-btn">Today</button>
+                            </div>
+                        </div>
+
+                        <!-- Calendar Content Layout -->
+                        <div class="calendar-body">
+                            <!-- Left Sidebar (Sidebar inside calendar) -->
+                            <div class="cal-sidebar">
+                                <button class="new-apt-btn">
+                                    <i class="ph ph-plus"></i> <span class="btn-text">New<br>Appointment</span>
+                                </button>
+
+                                <div class="cal-widget">
+                                    <h4>MINI VIEW</h4>
+                                    <div class="mini-grid">
+                                        <div class="mini-weekdays">
+                                            <span>S</span><span>M</span><span>T</span><span>W</span><span>T</span><span>F</span><span>S</span>
+                                        </div>
+                                        <div class="mini-days">
+                                            <span class="fade">29</span><span
+                                                class="fade">30</span><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span>
+                                            <span>6</span><span>7</span><span>8</span><span>9</span><span>10</span><span>11</span><span>12</span>
+                                            <span
+                                                class="active-mini">13</span><span>14</span><span>15</span><span>16</span><span>17</span><span>18</span><span>19</span>
+                                            <span>20</span><span>21</span><span>22</span><span>23</span><span>24</span><span>25</span><span>26</span>
+                                            <span>27</span><span>28</span><span>29</span><span>30</span><span>31</span><span
+                                                class="fade">1</span><span class="fade">2</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="cal-widget">
+                                    <h4>STATUS FILTERS</h4>
+                                    <div class="status-list">
+                                        <label class="status-item">
+                                            <div class="status-label"><span class="dot confirmed"></span> Confirmed
+                                            </div>
+                                            <input type="checkbox" checked>
+                                            <span class="custom-checkbox"><i class="ph-bold ph-check"></i></span>
+                                        </label>
+                                        <label class="status-item">
+                                            <div class="status-label"><span class="dot pending"></span> Pending</div>
+                                            <input type="checkbox" checked>
+                                            <span class="custom-checkbox"><i class="ph-bold ph-check"></i></span>
+                                        </label>
+                                        <label class="status-item">
+                                            <div class="status-label"><span class="dot rescheduled"></span> Rescheduled
+                                            </div>
+                                            <input type="checkbox">
+                                            <span class="custom-checkbox"></span>
+                                        </label>
+                                        <label class="status-item">
+                                            <div class="status-label"><span class="dot cancelled"></span> Cancelled
+                                            </div>
+                                            <input type="checkbox">
+                                            <span class="custom-checkbox"></span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Main Grid -->
+                            <div class="main-cal-grid">
+                                <div class="weekdays">
+                                    <span>SUN</span><span>MON</span><span>TUE</span><span>WED</span><span>THU</span><span>FRI</span><span>SAT</span>
+                                </div>
+                                <div class="days-grid">
+                                    <div class="day fade"><span class="date">29</span></div>
+                                    <div class="day fade"><span class="date">30</span></div>
+                                    <div class="day"><span class="date">1</span></div>
+                                    <div class="day"><span class="date">2</span>
+                                        <div class="event-chip white">
+                                            <span class="dot confirmed"></span> 09:30 AM
+                                            <div class="event-title">Dr. Appointment</div>
+                                            <div class="event-user">
+                                                <img src="https://i.pravatar.cc/100?img=12" alt="doc"> Dr. Chen
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="day"><span class="date">3</span></div>
+                                    <div class="day"><span class="date">4</span></div>
+                                    <div class="day"><span class="date">5</span></div>
+
+                                    <div class="day"><span class="date">6</span></div>
+                                    <div class="day"><span class="date">7</span></div>
+                                    <div class="day"><span class="date">8</span>
+                                        <div class="event-chip blue">
+                                            <div class="event-header"><span class="dot pending"
+                                                    style="background:#555;"></span> 11:00 AM</div>
+                                            <div class="event-title">Health Sync</div>
+                                        </div>
+                                    </div>
+                                    <div class="day active-day"><span class="date">9</span>
+                                        <div class="event-chip pink">
+                                            <div class="event-header"><span class="dot cancelled"
+                                                    style="background:#fff;"></span> 02:00 PM</div>
+                                            <div class="event-title">Wellness Workshop</div>
+                                            <div class="event-user">
+                                                <img src="https://i.pravatar.cc/100?img=33" alt="user"> Group
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="day"><span class="date">10</span></div>
+                                    <div class="day"><span class="date">11</span></div>
+                                    <div class="day"><span class="date">12</span></div>
+
+                                    <div class="day"><span class="date">13</span></div>
+                                    <div class="day"><span class="date">14</span></div>
+                                    <div class="day"><span class="date">15</span></div>
+                                    <div class="day"><span class="date">16</span></div>
+                                    <div class="day"><span class="date">17</span></div>
+                                    <div class="day"><span class="date">18</span></div>
+                                    <div class="day"><span class="date">19</span></div>
+
+                                    <div class="day"><span class="date">20</span></div>
+                                    <div class="day"><span class="date">21</span></div>
+                                    <div class="day"><span class="date">22</span></div>
+                                    <div class="day"><span class="date">23</span></div>
+                                    <div class="day"><span class="date">24</span></div>
+                                    <div class="day"><span class="date">25</span></div>
+                                    <div class="day"><span class="date">26</span></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Medicine Reminders View -->
+                <section id="view-medication" class="view">
+                    <div class="med-layout">
+                        <!-- Left Layout -->
+                        <div class="med-left">
+                            <div class="med-header">
+                                <h2>Medicine Reminders</h2>
+                                <p>Keep track of your health journey with ethereal precision.</p>
+                            </div>
+
+                            <div class="schedule-block">
+                                <div class="schedule-header">
+                                    <h3><i class="ph ph-sun"></i> Morning Schedule</h3>
+                                    <span>08:00 AM</span>
+                                </div>
+                                <div class="med-cards-grid">
+                                    <div class="med-card active">
+                                        <div class="med-icon-top">
+                                            <div class="icon-bg blue"><i class="ph-fill ph-drop"></i></div>
+                                            <div class="check-circle checked"><i class="ph-bold ph-check"></i></div>
+                                        </div>
+                                        <div class="med-info">
+                                            <h4>Fish Oil</h4>
+                                            <p>1 Capsule &bull; After breakfast</p>
+                                        </div>
+                                    </div>
+                                    <div class="med-card">
+                                        <div class="med-icon-top">
+                                            <div class="icon-bg beige"><i class="ph-fill ph-flask"></i></div>
+                                            <div class="check-circle"></div>
+                                        </div>
+                                        <div class="med-info">
+                                            <h4>Magnesium</h4>
+                                            <p>400mg &bull; With water</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="schedule-block">
+                                <div class="schedule-header">
+                                    <h3><i class="ph ph-moon"></i> Evening Schedule</h3>
+                                    <span>09:30 PM</span>
+                                </div>
+                                <div class="med-cards-grid">
+                                    <div class="med-card">
+                                        <div class="med-icon-top">
+                                            <div class="icon-bg pink"><i class="ph-fill ph-moon"></i></div>
+                                            <div class="check-circle"></div>
+                                        </div>
+                                        <div class="med-info">
+                                            <h4>Melatonin</h4>
+                                            <p>3mg &bull; 30 mins before sleep</p>
+                                        </div>
+                                    </div>
+                                    <div class="med-card">
+                                        <div class="med-icon-top">
+                                            <div class="icon-bg orange"><i class="ph-fill ph-pill"></i></div>
+                                            <div class="check-circle"></div>
+                                        </div>
+                                        <div class="med-info">
+                                            <h4>Vitamin D3</h4>
+                                            <p>2000 IU &bull; With evening meal</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Right Layout / Detail Side -->
+                        <div class="med-right">
+                            <div class="med-detail-card">
+                                <i class="ph ph-first-aid ghost-bg"></i>
+                                <div class="detail-header">
+                                    <h3>Fish Oil</h3>
+                                    <button class="edit-btn"><i class="ph ph-pencil-simple"></i></button>
+                                </div>
+
+                                <div class="detail-stats">
+                                    <div class="stat-box">
+                                        <span>DOSE AMOUNT</span>
+                                        <strong>1 Capsule</strong>
+                                    </div>
+                                    <div class="stat-box">
+                                        <span>FREQUENCY</span>
+                                        <strong>Daily</strong>
+                                    </div>
+                                </div>
+
+                                <div class="progress-section">
+                                    <span class="sec-label">WEEKLY PROGRESS</span>
+                                    <div class="pill-chart">
+                                        <div class="pill-column">
+                                            <div class="pill-bar taken"></div><span>M</span>
+                                        </div>
+                                        <div class="pill-column">
+                                            <div class="pill-bar taken"></div><span>T</span>
+                                        </div>
+                                        <div class="pill-column">
+                                            <div class="pill-bar taken"></div><span>W</span>
+                                        </div>
+                                        <div class="pill-column">
+                                            <div class="pill-bar taken today"></div><span
+                                                class="active-day-text">T</span>
+                                        </div>
+                                        <div class="pill-column">
+                                            <div class="pill-bar empty"></div><span>F</span>
+                                        </div>
+                                        <div class="pill-column">
+                                            <div class="pill-bar empty"></div><span>S</span>
+                                        </div>
+                                        <div class="pill-column">
+                                            <div class="pill-bar empty"></div><span>S</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="refill-alert">
+                                    <div class="refill-left"><span class="dot red"></span> Refill needed in 4 days</div>
+                                    <a href="#" class="order-link">Order Now</a>
+                                </div>
+
+                                <button class="full-history-btn">View Full History</button>
+                            </div>
+
+                            <div class="adherence-card">
+                                <div class="icon-bg orange chart-icon"><i class="ph ph-pulse"></i></div>
+                                <div class="ad-info">
+                                    <span>MONTHLY ADHERENCE</span>
+                                    <strong>94.8%</strong>
+                                </div>
+                                <div class="ad-trend positive"><i class="ph ph-trend-up"></i> +2.4%</div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Health Hub / Education View -->
+                <section id="view-education" class="view">
+                    <div class="hub-layout">
+                        <!-- Timeline Section (Left) -->
+                        <div class="hub-main">
+                            <div class="med-header">
+                                <h2>Health Hub</h2>
+                                <p>Review your clinical timeline and maintain your medical history.</p>
+                            </div>
+
+                            <div class="timeline-container">
+                                <h3>Medical History Timeline</h3>
+                                <div class="timeline">
+
+                                    <div class="timeline-item">
+                                        <div class="timeline-dot pink"></div>
+                                        <div class="timeline-content">
+                                            <div class="timeline-header">
+                                                <span class="date-pill">MAR 2023 - MAY 2023</span>
+                                                <h4>Prednisone Treatment</h4>
+                                            </div>
+                                            <p>Post-viral inflammation recovery. Completed full cycle without
+                                                complications.</p>
+                                            <div class="tags">
+                                                <span class="tag">Infection Recovery</span>
+                                                <span class="tag">Anti-inflammatory</span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="timeline-item">
+                                        <div class="timeline-dot blue"></div>
+                                        <div class="timeline-content">
+                                            <div class="timeline-header">
+                                                <span class="date-pill">JAN 2023</span>
+                                                <h4>Annual Health Assessment</h4>
+                                            </div>
+                                            <p>Comprehensive blood panel and physical. Vitamin D deficiency noted and
+                                                addressed.</p>
+                                            <div class="tags">
+                                                <span class="tag">General Health</span>
+                                                <span class="tag">Lab Results</span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="timeline-item">
+                                        <div class="timeline-dot orange"></div>
+                                        <div class="timeline-content">
+                                            <div class="timeline-header">
+                                                <span class="date-pill">SEP 2022</span>
+                                                <h4>Influenza Vaccination</h4>
+                                            </div>
+                                            <p>Seasonal preventative care administered by Dr. Sarah Miller.</p>
+                                            <div class="tags">
+                                                <span class="tag">Immunization</span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Sidebar Section (Right) -->
+                        <div class="hub-sidebar">
+                            <div class="info-card">
+                                <h4>Previous Medications</h4>
+                                <ul class="info-list">
+                                    <li>Amoxicillin (2022)</li>
+                                    <li>Ibuprofen 800mg PRN</li>
+                                </ul>
+                                <button class="add-info-btn"><i class="ph ph-plus"></i></button>
+                            </div>
+
+                            <div class="info-card">
+                                <h4>Allergies</h4>
+                                <ul class="info-list">
+                                    <li><span class="dot red"></span> Penicillin</li>
+                                    <li><span class="dot red"></span> Peanuts (Mild)</li>
+                                </ul>
+                                <button class="add-info-btn"><i class="ph ph-plus"></i></button>
+                            </div>
+
+                            <div class="info-card">
+                                <h4>Other Knowledge</h4>
+                                <ul class="info-list">
+                                    <li>Blood Type: O+</li>
+                                    <li>Family History: Migraines</li>
+                                </ul>
+                                <button class="add-info-btn"><i class="ph ph-plus"></i></button>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+        </main>
+    </div>
+
+    <!-- Templates for dynamic elements -->
+    <template id="tpl-appointment-card">
+        <div class="interactive-card appointment-card">
+            <h4><i class="ph ph-calendar-plus"></i> Schedule Appointment</h4>
+            <p class="card-desc">Select a doctor and available time slot.</p>
+            <div class="doc-list">
+                <div class="doc-item selected">
+                    <img src="https://i.pravatar.cc/100?img=12" alt="Dr">
+                    <div>
+                        <strong>Dr. Emily Chen</strong>
+                        <span>Cardiologist</span>
+                    </div>
+                </div>
+                <!-- ... -->
+            </div>
+            <div class="time-slots">
+                <button class="slot">Today, 2:00 PM</button>
+                <button class="slot selected">Tomorrow, 10:30 AM</button>
+                <button class="slot">Thu, 9:00 AM</button>
+            </div>
+            <button class="btn-primary confirm-btn">Confirm Booking</button>
+        </div>
+    </template>
+
+    <template id="tpl-medicine-card">
+        <div class="interactive-card medicine-card">
+            <h4><i class="ph ph-pill"></i> Add Medication Reminder</h4>
+            <div class="input-group">
+                <label>Medication Name</label>
+                <input type="text" value="Amlodipine 5mg" readonly>
+            </div>
+            <div class="med-schedule">
+                <div class="schedule-item">
+                    <span>Frequency</span>
+                    <strong>Daily</strong>
+                </div>
+                <div class="schedule-item">
+                    <span>Time</span>
+                    <strong>08:00 AM</strong>
+                </div>
+            </div>
+            <button class="btn-primary confirm-btn">Set Reminder</button>
+        </div>
+    </template>
+
+    <input type="file" id="global-file-input" style="display:none;" multiple>
+    <script src="script.js"></script>
+</body>
+
+</html>
