@@ -1,4 +1,4 @@
-const GEMINI_API_KEY = "AIzaSyA4Bjiu_-e7g7BtxFodkgqEhnHuZ7mEIZA";
+const GEMINI_API_KEY = "AIzaSyC0lSZ-0tp-4skwHYvuid5wCfsT1je6XVY";
 
 async function callGemini(promptText, profile) {
     if (!GEMINI_API_KEY || GEMINI_API_KEY.trim() === '') return null;
@@ -7,9 +7,12 @@ async function callGemini(promptText, profile) {
         if (profile) {
             systemCtx += ` Note the user's profile - Age: ${profile.age}, Lifestyle: ${profile.lifestyle}, Conditions: ${profile.conditions.join(',') || 'none'}, Allergies: ${profile.allergies.join(',') || 'none'}. Avoid recommending anything that conflicts with their allergies or conditions.`;
         }
-        const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`, {
+        const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent`, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: { 
+                'Content-Type': 'application/json',
+                'x-goog-api-key': GEMINI_API_KEY
+            },
             body: JSON.stringify({
                 system_instruction: { parts: [{ text: systemCtx }] },
                 contents: [{
@@ -115,7 +118,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let pendingReminder = null;
 
     function parseTime(text) {
-        const match = text.match(/(\\d{1,2})(?::(\\d{2}))?\\s*(am|pm)?/i);
+        const match = text.match(/(\d{1,2})(?::(\d{2}))?\s*(am|pm)?/i);
         if (match) {
             let h = parseInt(match[1]);
             let m = match[2] ? parseInt(match[2]) : 0;
@@ -132,6 +135,8 @@ document.addEventListener('DOMContentLoaded', () => {
             userProfile = null;
             profileOnboardingState = 'NOT_STARTED';
             tempProfile = { name: "", age: null, lifestyle: "moderate", allergies: [], conditions: [] };
+            pendingReminder = null;
+            reminders = [];
             return { type: "reset", message: "Profile has been reset. How can I help you?" };
         }
 
@@ -252,27 +257,82 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const lowerText = userText.toLowerCase();
 
-        const isReminder = (pendingReminder || lowerText.includes('medicine') || lowerText.includes('remind') || lowerText.includes('add '));
-        const explicitAppt = lowerText.match(/(need doctor|book appointment|book|appointment|doctor)/);
+        // If we have a pending reminder follow-up, handle that first (user is mid-conversation)
+        if (pendingReminder) {
+            // User is answering a follow-up question about medicine name or time
+            let timeMatch = parseTime(userText);
+            if (timeMatch) pendingReminder.time = timeMatch;
+
+            if (!pendingReminder.medicine) {
+                // They're giving us the medicine name
+                let cleanName = userText.trim().replace(/[^a-zA-Z\s]/g, '').trim();
+                if (cleanName.length > 0) {
+                    let words = cleanName.split(/\s+/);
+                    pendingReminder.medicine = words.map(w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase()).join(' ');
+                }
+            }
+            if (!pendingReminder.time) {
+                // They're giving us the time
+                // parseTime already ran above, if still null, ask again
+            }
+
+            if (!pendingReminder.medicine) {
+                return { type: "normal", message: "What is the medicine name?" };
+            } else if (!pendingReminder.time) {
+                return { type: "normal", message: `What time should I remind you to take ${pendingReminder.medicine}?` };
+            }
+
+            // Both available — save it
+            const id = Date.now();
+            reminders.push({ id, medicine: pendingReminder.medicine, time: pendingReminder.time, status: "pending" });
+
+            let [rh, rm] = pendingReminder.time.split(':');
+            let rampm = rh >= 12 ? 'PM' : 'AM';
+            rh = rh % 12 || 12;
+            let rdisplayTime = `${rh}:${rm} ${rampm}`;
+
+            botHTML = `Reminder set for ${pendingReminder.medicine} at ${rdisplayTime} ⏰\n\nI'll notify you on time.`;
+            responseType = "reminder_set";
+
+            // Sync to medication UI
+            addMedToUI(pendingReminder.medicine, rdisplayTime);
+            pendingReminder = null;
+            return { type: responseType, message: botHTML };
+        }
+
+        const isReminder = (lowerText.includes('medicine') || lowerText.includes('remind') || lowerText.includes('medication'));
+        const explicitAppt = lowerText.match(/(need doctor|book appointment|appointment|doctor)/);
 
         if (isReminder && !explicitAppt) {
-            if (!pendingReminder) pendingReminder = { medicine: null, time: null };
+            pendingReminder = { medicine: null, time: null };
 
             let timeMatch = parseTime(userText);
             if (timeMatch) pendingReminder.time = timeMatch;
 
-            const medMatch = lowerText.match(/(?:take|for|add)\s+([a-zA-Z]+)(?:\s+(?:at|in|on))?/i);
-            if (medMatch && !['medicine','my','reminder','pill','reminders'].includes(medMatch[1].toLowerCase())) {
+            // Try to extract medicine name
+            let ignoreWords = ['medicine', 'my', 'reminder', 'pill', 'reminders', 'for', 'take', 'add', 'a', 'the', 'some', 'any'];
+            
+            // 1. Look for patterns like "take <Med>" or "add <Med>"
+            const medMatch = lowerText.match(/(?:take|for|add)\s+([a-zA-Z]+)/i);
+            if (medMatch && !ignoreWords.includes(medMatch[1].toLowerCase())) {
                 pendingReminder.medicine = medMatch[1].charAt(0).toUpperCase() + medMatch[1].slice(1);
-            } else if (!pendingReminder.medicine) {
+            } 
+            
+            // 2. If nothing found, try to assume any capitalized word
+            if (!pendingReminder.medicine) {
                 let wMatch = userText.match(/\b([A-Z][a-z]+)\b/);
-                if (wMatch && wMatch[1] !== 'I' && wMatch[1] !== 'Remind') pendingReminder.medicine = wMatch[1];
+                if (wMatch && !['I', 'Remind', 'Set', 'Medicine', 'Please'].includes(wMatch[1])) {
+                    pendingReminder.medicine = wMatch[1];
+                }
             }
 
-            if (!pendingReminder.medicine && !pendingReminder.time) {
-                // heuristic fallback: if time is there but name is missing, assume the first meaningful string they gave
-                let words = userText.split(/\s+/);
-                if (words.length === 1 && pendingReminder.time) pendingReminder.medicine = userText;
+            // 3. Fallback: Extract from remaining text
+            if (!pendingReminder.medicine) {
+                let cleanText = lowerText.replace(/remind me|to take|my medicine|for|at|in|on|\d+|am|pm|:/gi, '').trim();
+                let words = cleanText.split(/\s+/).filter(w => !ignoreWords.includes(w) && w.length > 2);
+                if (words.length > 0) {
+                    pendingReminder.medicine = words[0].charAt(0).toUpperCase() + words[0].slice(1);
+                }
             }
 
             if (!pendingReminder.medicine && !pendingReminder.time) {
@@ -280,13 +340,7 @@ document.addEventListener('DOMContentLoaded', () => {
             } else if (!pendingReminder.time) {
                 return { type: "normal", message: `Got it. What time should I remind you to take ${pendingReminder.medicine}?` };
             } else if (!pendingReminder.medicine) {
-                // If they say just the name as answer to "What is the medicine name?"
-                if (userText.split(/[\s,]+/).length <= 2) {
-                    pendingReminder.medicine = userText.trim().replace(/[^a-zA-Z]/g, '');
-                    pendingReminder.medicine = pendingReminder.medicine.charAt(0).toUpperCase() + pendingReminder.medicine.slice(1);
-                } else {
-                    return { type: "normal", message: `I have the time set for ${pendingReminder.time}. What is the medicine name?` };
-                }
+                return { type: "normal", message: `I have the time set for ${pendingReminder.time}. What is the medicine name?` };
             }
 
             const id = Date.now();
@@ -302,7 +356,11 @@ document.addEventListener('DOMContentLoaded', () => {
             h = h % 12 || 12;
             let displayTime = `${h}:${m} ${ampm}`;
 
-            botHTML = `Reminder set for ${pendingReminder.medicine} at ${displayTime} ⏰\n\nI’ll notify you on time.`;
+            botHTML = `Reminder set for ${pendingReminder.medicine} at ${displayTime} ⏰\n\nI'll notify you on time.`;
+            responseType = "reminder_set";
+
+            // Sync to medication UI
+            addMedToUI(pendingReminder.medicine, displayTime);
             pendingReminder = null;
 
         } else {
@@ -394,6 +452,26 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         return { type: responseType, message: botHTML, templateId: templateId, doctor_type: doctorType, slots: docSlots };
+    }
+
+    function addMedToUI(medName, displayTime) {
+        const morningGrid = document.querySelector('#view-medication .schedule-block:first-child .med-cards-grid');
+        if (morningGrid) {
+            const newMedCard = document.createElement('div');
+            newMedCard.className = 'med-card';
+            newMedCard.style.animation = 'slideUp 0.4s ease forwards';
+            newMedCard.innerHTML = `
+                <div class="med-icon-top">
+                    <div class="icon-bg blue"><i class="ph-fill ph-pill"></i></div>
+                    <div class="check-circle"></div>
+                </div>
+                <div class="med-info">
+                    <h4>${medName}</h4>
+                    <p>1 Pill &bull; ${displayTime}</p>
+                </div>
+            `;
+            morningGrid.appendChild(newMedCard);
+        }
     }
 
     function updateHealthHubUI(profile) {
@@ -794,8 +872,8 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Check roughly every 30 seconds
-    setInterval(checkReminders, 30000);
+    // Check every 10 seconds to avoid browser throttle missing a minute
+    setInterval(checkReminders, 10000);
 
     window.sendNotification = function(reminder) {
         // Show notification badge or automatically switch to chat view
